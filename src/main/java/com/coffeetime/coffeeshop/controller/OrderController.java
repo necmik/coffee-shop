@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.coffeetime.coffeeshop.domain.Order;
 import com.coffeetime.coffeeshop.domain.OrderLine;
-import com.coffeetime.coffeeshop.domain.Topping;
 import com.coffeetime.coffeeshop.exception.HttpEmptyOrderException;
 import com.coffeetime.coffeeshop.service.OrderService;
 import com.coffeetime.coffeeshop.service.ToppingService;

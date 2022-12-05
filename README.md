@@ -28,8 +28,11 @@ The project contains 3 basic Rest API:
 
 * /api/coffees : CRUD operations for coffees.
   
-* /api/toppings : CRUD and most used operations for toppings.
+* /api/toppings : CRUD for toppings.
 
 * /api/orders : CRUD operations for orders.
  
+- Note: The application was throwing error below. Because I didn't have enough time to resolve it, I couldn't test the services. And it wouldn't make sense to implement test cases. So, I just declared them. I am going to figure the problem out for next days.
  
+ Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'coffeeRepository' defined in com.coffeetime.coffeeshop.repository.CoffeeRepository defined in @EnableJpaRepositories declared on CoffeeshopApplication: Not a managed type: class com.coffeetime.coffeeshop.domain.Coffee
+Caused by: java.lang.IllegalArgumentException: Not a managed type: class com.coffeetime.coffeeshop.domain.Coffee
