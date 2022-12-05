@@ -6,8 +6,6 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,5 +42,12 @@ public class ToppingService {
     
     public List<Topping> getTopN(int limit) {
         return toppingRepository.findTopN(limit);
+    }
+    
+    public void increaseOrderCounts(List<Topping> toppings) {
+    	toppings.forEach(topping -> {
+    		topping.setOrderedCount(topping.getOrderedCount() + 1);
+        	toppingRepository.save(topping);
+    	});    	
     }
 }

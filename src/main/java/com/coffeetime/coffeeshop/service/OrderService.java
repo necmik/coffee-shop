@@ -67,5 +67,9 @@ public class OrderService {
         }
         	
         order.setDiscountedAmount(originalAmount.subtract(discountAmount)); 
+        
+        if (originalAmount.compareTo(discountAmount) != 0) {
+        	logger.info("Discount applied. New price is {}", discountAmount);
+        }
     }
 }
