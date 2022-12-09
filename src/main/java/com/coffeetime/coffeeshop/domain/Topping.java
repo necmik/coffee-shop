@@ -1,9 +1,8 @@
 package com.coffeetime.coffeeshop.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,5 +13,5 @@ import lombok.EqualsAndHashCode;
 public class Topping extends Product {
 
 	@Column(name = "ordered_count")
-	private int orderedCount;
+	private int orderedCount = 0;
 }

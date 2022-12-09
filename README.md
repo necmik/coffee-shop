@@ -1,14 +1,15 @@
 ## Coffee Shop
 
-Coffee Shop is a backend for online coffee place startup business project.Its functions are :
+Coffee Shop is a backend for online coffee place startup business project.
+
+### Core Functions
 * Users can place drinks with toppings orders
 * Each order my have multiple coffees and each coffee may have multiple toppings.
 * Admins can create/update/delete drinks/toppings (AuthN/AuthZ mechanism not implemented, so these APIs are open)
 * Admins have access to the most used toppoings.
-
-The project was developed with Spring Boot framework and H2 in-memory database for testing/POC purpose. 
-
+* Admins can get top toppings with parameter
 ### Minimum Requirements to build/deploy
+The project was developed with Spring Boot framework and H2 in-memory database for testing/POC purpose. Minimum requirements for setup are:
 * JDK 17+
 * IDE like Eclipse, IntelliJ or Spring Tool Suite(STS) with Lombok
 * Git
@@ -24,19 +25,16 @@ The project was developed with Spring Boot framework and H2 in-memory database f
  
 ### Services
 
-The project contains 3 basic Rest API:
+The project contains 3 basic Rest API set:
 
-* /api/coffees : CRUD operations for coffees.
+* CRUD operations for coffees.
+  - Get all coffees : GET localhost:8080/coffeeshop/coffees
+  - Get coffee by id: GET localhost:8080/coffeeshop/coffees/{id}
+  - Create a new coffee: POST localhost:8080/coffeeshop/coffees
+  - Update a coffee: PUT localhost:8080/coffeeshop/coffees/{id}
+  - Delete a coffee: DELETE localhost:8080/coffeeshop/coffees/{id}
   
 * /api/toppings : CRUD for toppings.
 
 * /api/orders : CRUD operations for orders.
  
-### Note
-
-The application was throwing error below. Because I didn't have enough time to resolve it, I couldn't test the services. And it wouldn't make sense to implement test cases. So, I just declared them. I am going to figure the problem out for next days.
-
-``` 
-Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'coffeeRepository' defined in com.coffeetime.coffeeshop.repository.CoffeeRepository defined in @EnableJpaRepositories declared on CoffeeshopApplication: Not a managed type: class com.coffeetime.coffeeshop.domain.Coffee
-Caused by: java.lang.IllegalArgumentException: Not a managed type: class com.coffeetime.coffeeshop.domain.Coffee
-```

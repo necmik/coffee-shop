@@ -22,7 +22,7 @@ import com.coffeetime.coffeeshop.exception.HttpNotFoundErrorException;
 import com.coffeetime.coffeeshop.service.ToppingService;
 
 @RestController
-@RequestMapping("/api/toppings")
+@RequestMapping("/toppings")
 public class ToppingController {
 	@Autowired
 	private ToppingService toppingService;

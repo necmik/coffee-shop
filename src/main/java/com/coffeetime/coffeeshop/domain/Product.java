@@ -2,33 +2,30 @@ package com.coffeetime.coffeeshop.domain;
 
 import java.math.BigDecimal;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-@Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@MappedSuperclass
 @Data
-public class Product {
+public abstract class Product {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name = "name")
-	@NotEmpty(message = "Product name cannot be empty")
+
+	@Column(unique = true) // TODO: Create a validator for a custom message
+	@NotNull(message = "Name cannot be null")
+	@NotEmpty(message = "Name cannot be empty")
 	private String name;
 	
 	@Column(name = "amount")
-	@NotNull(message = "Product price cannot be empty")
-	@Min(value = 0, message = "Product price must be greater than or equal to 0")
+	@Min(value = 1, message = "Product price must be greater than or equal to 1")
 	private BigDecimal amount;	
 }

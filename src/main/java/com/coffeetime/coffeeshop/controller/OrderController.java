@@ -20,7 +20,7 @@ import com.coffeetime.coffeeshop.service.OrderService;
 import com.coffeetime.coffeeshop.service.ToppingService;
 
 @RestController
-@RequestMapping("/api/orders")
+@RequestMapping("/orders")
 public class OrderController {
 	@Autowired
 	private OrderService orderService;

@@ -26,8 +26,20 @@ public class CoffeeServiceTest {
     }
     
     @Test
-    // Test saving coffee
+    // Verify happy path for saving a coffee
     public void testSave() {  
+    	
+    }
+    
+    @Test
+    // Verify that saving a coffee with amount 0 throws error
+    public void testSaveWithZeroAmount_Negative() {  
+    	
+    }
+    
+    @Test
+    // Verify that coffee name must be unique
+    public void testSaveDuplicatedName_Negative() {  
     	
     }
     

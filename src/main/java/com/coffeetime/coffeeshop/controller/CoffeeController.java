@@ -4,6 +4,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,23 +24,23 @@ import com.coffeetime.coffeeshop.exception.HttpNotFoundErrorException;
 import com.coffeetime.coffeeshop.service.CoffeeService;
 
 @RestController
-@RequestMapping("/api/coffees")
+@RequestMapping("/coffees")
 public class CoffeeController {	
 	
 	@Autowired
 	private CoffeeService coffeeService;
 	
     @PostMapping
-    public ResponseEntity<Coffee> createProduct(@RequestBody Coffee coffee) throws URISyntaxException {
+    public ResponseEntity<Coffee> createCoffee(@RequestBody @Valid Coffee coffee) throws URISyntaxException {
         if (coffee.getId() != null) {
             throw new HttpClientErrorException("A coffee to be created cannot have id attribute");
         }
-        Coffee result = coffeeService.save(coffee);
-        return ResponseEntity.created(new URI("/api/coffees/" + result.getId())).body(result);
+        Coffee savedCoffee = coffeeService.save(coffee);
+        return ResponseEntity.created(new URI("/api/coffees/" + savedCoffee.getId())).body(savedCoffee);
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<Coffee> updateProduct(@PathVariable Long id, @RequestBody Coffee coffee) throws URISyntaxException {
+    public ResponseEntity<Coffee> updateCoffee(@PathVariable Long id, @RequestBody @Valid Coffee coffee) throws URISyntaxException {
         if (coffeeService.getCoffee(id) == null) {
             throw new HttpNotFoundErrorException("Cannot update because the coffee with id " + id + " does not exist");
         }
