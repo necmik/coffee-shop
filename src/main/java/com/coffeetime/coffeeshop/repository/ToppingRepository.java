@@ -11,6 +11,6 @@ import com.coffeetime.coffeeshop.domain.Topping;
 public interface ToppingRepository extends JpaRepository<Topping, Long> {
 	
 
-	@Query(value = "SELECT TOP ?1 a FROM Topping a ORDER BY a.orderedCount DESC", nativeQuery = true)
+	@Query(value = "SELECT TOP ?1 a.* FROM Topping a ORDER BY a.ordered_count DESC", nativeQuery = true)
 	List<Topping> findTopN(@Param("limit") int limit);
 }

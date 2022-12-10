@@ -8,12 +8,17 @@ Coffee Shop is a backend for online coffee place startup business project.
 * Admins can create/update/delete drinks/toppings (AuthN/AuthZ mechanism not implemented, so these APIs are open)
 * Admins have access to the most used toppoings.
 * Admins can get top toppings with parameter
+
+### Out of Scopes
+* AuthN/AuthZ implemention for admin services
+* UI design
+
 ### Minimum Requirements to build/deploy
-The project was developed with Spring Boot framework and H2 in-memory database for testing/POC purpose. Minimum requirements for setup are:
+The project was developed with Spring Boot framework and H2 in-memory database for testing/POC purposes. Minimum requirements for setup are:
 * JDK 17+
-* IDE like Eclipse, IntelliJ or Spring Tool Suite(STS) with Lombok
+* An IDE like Eclipse, IntelliJ or Spring Tool Suite(STS) with Lombok
 * Git
-* Postman like HTTP client tool to run REST services. 
+* An HTTP client tool like Postman to test REST services. 
 
 ### Installation Steps
 
@@ -34,7 +39,14 @@ The project contains 3 basic Rest API set:
   - Update a coffee: PUT localhost:8080/coffeeshop/coffees/{id}
   - Delete a coffee: DELETE localhost:8080/coffeeshop/coffees/{id}
   
-* /api/toppings : CRUD for toppings.
+* CRUD operations for toppings:
+  - Get all toppings: GET localhost:8080/coffeeshop/toppings
+  - Get topping by id: GET localhost:8080/coffeeshop/toppings/{id}
+  - Create a new topping: POST localhost:8080/coffeeshop/toppings
+  - Update a topping: PUT localhost:8080/coffeeshop/toppings/{id}
+  - Delete a topping: DELETE localhost:8080/coffeeshop/toppings/{id}
+  - Listing top N toppings by order count : GET localhost:8080/coffeeshop/toppings/getTopNTopping/{limit}
 
-* /api/orders : CRUD operations for orders.
+* CRUD operations for orders:
+  - 
  

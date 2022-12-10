@@ -25,8 +25,32 @@ public class ToppingServiceTest {
     }
     
     @Test
-    // Test saving topping
+    // Verify happy path for saving a topping
     public void testSave() {  
+    	
+    }
+    
+    @Test
+    // Verify that saving a coffee with amount lower than 1 throws error
+    public void testSaveWithZeroAmount_Negative() {  
+    	
+    }
+    
+    @Test
+    // Verify that topping name must be unique
+    public void testSaveDuplicatedName_Negative() {  
+    	
+    }
+    
+    @Test
+    // Verify that topping name must be defined
+    public void testSaveNullName_Negative() {  
+    	
+    }
+    
+    @Test
+    // Verify that topping name is not empty
+    public void testSaveEmptyName_Negative() {  
     	
     }
     
@@ -43,8 +67,26 @@ public class ToppingServiceTest {
     }
     
     @Test
+    // Verify happy path for updating a topping
+    public void testUpdate() {  
+    	
+    }
+    
+    @Test
     // Test deleting a topping
     public void testDelete() {  
     	
-    }        
+    }    
+    
+    @Test
+    // Validate order count is set to zero by default.
+    public void testOrderCountSetZero() {  
+    	
+    }    
+    
+    @Test
+    // Test top toppings
+    public void testTopNToppings() {  
+    	
+    }    
 }

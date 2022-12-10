@@ -32,7 +32,7 @@ public class CoffeeServiceTest {
     }
     
     @Test
-    // Verify that saving a coffee with amount 0 throws error
+    // Verify that saving a coffee with amount lower than 1 throws error
     public void testSaveWithZeroAmount_Negative() {  
     	
     }
@@ -40,6 +40,18 @@ public class CoffeeServiceTest {
     @Test
     // Verify that coffee name must be unique
     public void testSaveDuplicatedName_Negative() {  
+    	
+    }
+    
+    @Test
+    // Verify that coffee name must be defined
+    public void testSaveNullName_Negative() {  
+    	
+    }
+    
+    @Test
+    // Verify that coffee name is not empty
+    public void testSaveEmptyName_Negative() {  
     	
     }
     
@@ -52,6 +64,12 @@ public class CoffeeServiceTest {
     @Test
     // Test	finding all coffees
     public void testFindAll() {
+    	
+    }
+    
+    @Test
+    // Verify happy path for updating a coffee
+    public void testUpdate() {  
     	
     }
     
