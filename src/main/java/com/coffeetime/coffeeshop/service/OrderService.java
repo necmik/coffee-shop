@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.coffeetime.coffeeshop.domain.Order;
 import com.coffeetime.coffeeshop.domain.OrderLine;
+import com.coffeetime.coffeeshop.domain.Topping;
 import com.coffeetime.coffeeshop.repository.OrderRepository;
 
 @Service
@@ -35,29 +36,30 @@ public class OrderService {
         logger.info("Order with Id {} deleted", orderId);
     }
 
-    public Optional<Order> findById(Long id) {
+    public Optional<Order> getOrder(Long id) {
         return orderRepository.findById(id);
     }
 
-    public List<Order> findAll() {
+    public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }   
     
     private void setOrderAmounts(Order order) {       
     	
     	BigDecimal originalAmount = BigDecimal.ZERO; // Total amount of the order
-    	BigDecimal lowestLineAmount = BigDecimal.valueOf(1000000000); // Lowest amount of the coffee with toppings
+    	BigDecimal lowestLineAmount = BigDecimal.valueOf(1000000000); // Lowest amount of the order lines
     	double discountPercentage = 0.25;
     	BigDecimal minimumAmountForDiscount = BigDecimal.valueOf(12);
     	
         for (OrderLine orderLine : order.getOrderLines()) {        	
         	BigDecimal orderLineAmount = BigDecimal.ZERO;
-        	orderLine.getToppings().forEach(topping -> {
-        		orderLineAmount.add(topping.getAmount());
-        	});
+        	orderLineAmount = orderLineAmount.add(orderLine.getCoffee().getAmount());
+        	for(Topping topping : orderLine.getToppings()) {
+        		orderLineAmount = orderLineAmount.add(topping.getAmount());
+        	};
         	orderLine.setTotalAmount(orderLineAmount);
         	
-        	originalAmount.add(orderLineAmount);
+        	originalAmount = originalAmount.add(orderLineAmount);
         	lowestLineAmount = lowestLineAmount.min(orderLineAmount);            
         };
         
@@ -75,7 +77,7 @@ public class OrderService {
         order.setDiscountedAmount(originalAmount.subtract(discountAmount)); 
         
         if (originalAmount.compareTo(discountAmount) != 0) {
-        	logger.info("Discount applied. New price is {}", discountAmount);
+        	logger.info("Discount applied. New price is {}", order.getDiscountedAmount());
         }
     }
 }

@@ -9,6 +9,8 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,7 +35,7 @@ public class Order {
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     @NotNull(message = "Order date cannot be empty")
-    private Date orderDate;
+    private Date orderDate = new Date();
 	
 	@Column(name = "original_amount")
 	private BigDecimal originalAmount;
@@ -44,6 +46,7 @@ public class Order {
 	/**
 	 * Each order may have multiple coffees.
 	 */
+	@JsonManagedReference
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<OrderLine> orderLines = new ArrayList<>();
 }

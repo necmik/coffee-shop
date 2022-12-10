@@ -26,50 +26,74 @@ public class OrderServiceTest {
     }
     
     @Test
-    // Test saving order
+    // Validate saving order
     public void testSave() {  
     	
     }
     
     @Test
-    // Test finding order by id
+    // Validate finding order by id
     public void testFindById() {
     	
     }
     
     @Test
-    // Test finding orders by coffee
-    public void testFindByCoffee() {
-
-    }
-    
-    @Test
-    // Test finding orders by date
+    // Validate finding orders by date
     public void testFindByDate() {
     	
     }
     
     @Test
-    // Test	finding all orders
+    // Validate	finding all orders
     public void testFindAll() {
     	
     }
     
     @Test
-    // Test	applying discount to order
+    // Verify amount of the order is correct
+    public void testOrderAmount() {
+    	
+    }
+    
+    @Test
+    // Verify that %25 discount applied
     public void testDiscountApplied() {
     	
     }
     
     @Test
-    // Test	not applying discount to order
+    // Verify that coffee with lowest amount becomes free for orders with more than 3 coffees
+    public void testFreeCoffeeApplied() {
+    	
+    }
+    
+    @Test
+    // Validate	discount is not applied to order
     public void testDiscountNotApplied() {
     	
     }
     
     @Test
-    // Test	order count of topping increased after a new order
+    // Validate	order count of topping increased after a new order
     public void testToppingOrderCount() {
+    	
+    }
+    
+    @Test
+    // Verify that exception is thrown for invalid coffee
+    public void testInvalidCoffeeId_Negative() {
+    	
+    }
+    
+    @Test
+    // Verify that exception is thrown for invalid topping
+    public void testInvalidToppingId_Negative() {
+    	
+    }
+    
+    @Test
+    // Validate deleting order with its order lines
+    public void testDelete() {  
     	
     }
 }

@@ -43,11 +43,4 @@ public class ToppingService {
     public List<Topping> getTopN(int limit) {
         return toppingRepository.findTopN(limit);
     }
-    
-    public void increaseOrderCounts(List<Topping> toppings) {
-    	toppings.forEach(topping -> {
-    		topping.setOrderedCount(topping.getOrderedCount() + 1);
-        	toppingRepository.save(topping);
-    	});    	
-    }
 }

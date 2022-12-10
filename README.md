@@ -12,6 +12,8 @@ Coffee Shop is a backend for online coffee place startup business project.
 ### Out of Scopes
 * AuthN/AuthZ implemention for admin services
 * UI design
+* Size diversities of drinks
+* Updating order (Time restriction)
 
 ### Minimum Requirements to build/deploy
 The project was developed with Spring Boot framework and H2 in-memory database for testing/POC purposes. Minimum requirements for setup are:
@@ -48,5 +50,8 @@ The project contains 3 basic Rest API set:
   - Listing top N toppings by order count : GET localhost:8080/coffeeshop/toppings/getTopNTopping/{limit}
 
 * CRUD operations for orders:
+  - Get all orders: GET localhost:8080/coffeeshop/orders
+  - Get order by id: GET localhost:8080/coffeeshop/orders/{id}
+  - Create a new order : POST localhost:8080/coffeeshop/orders (DTO used)
   - 
  
