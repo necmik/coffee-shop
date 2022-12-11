@@ -23,6 +23,8 @@ import com.coffeetime.coffeeshop.domain.Coffee;
 import com.coffeetime.coffeeshop.domain.Order;
 import com.coffeetime.coffeeshop.domain.OrderLine;
 import com.coffeetime.coffeeshop.domain.Topping;
+import com.coffeetime.coffeeshop.payload.OrderDto;
+import com.coffeetime.coffeeshop.payload.OrderLineDto;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -43,7 +45,7 @@ public class OrderServiceTest {
     private Topping[] testToppings;
     final static int TEST_NumberOfToppings = 3;
     
-    private Order[] testOrders;
+    private OrderDto[] testOrders;
     final static int TEST_NumberOfOrders = 4;
     
     @Before
@@ -56,37 +58,37 @@ public class OrderServiceTest {
     	createToppings();
     	
     	// Create test orders
-    	testOrders = new Order[TEST_NumberOfOrders];
+    	testOrders = new OrderDto[TEST_NumberOfOrders];
     	    	
-    	OrderLine orderLine0 = new OrderLine();
-    	orderLine0.setCoffee(testCoffees[0]);
-    	orderLine0.setToppings(new HashSet<>(Arrays.asList(testToppings[0])));
+    	OrderLineDto orderLine0 = new OrderLineDto();
+    	orderLine0.setCoffeeId(testCoffees[0].getId());
+    	orderLine0.setToppingIds(new HashSet<>(Arrays.asList(testToppings[0].getId())));
     	
-    	OrderLine orderLine1 = new OrderLine();
-    	orderLine1.setCoffee(testCoffees[1]);
-    	orderLine1.setToppings(new HashSet<>(Arrays.asList(testToppings[1])));
+    	OrderLineDto orderLine1 = new OrderLineDto();
+    	orderLine1.setCoffeeId(testCoffees[1].getId());
+    	orderLine1.setToppingIds(new HashSet<>(Arrays.asList(testToppings[1].getId())));
     	
-    	OrderLine orderLine2 = new OrderLine();
-    	orderLine2.setCoffee(testCoffees[0]);
-    	orderLine2.setToppings(new HashSet<>(Arrays.asList(testToppings[0], testToppings[1])));
+    	OrderLineDto orderLine2 = new OrderLineDto();
+    	orderLine2.setCoffeeId(testCoffees[0].getId());
+    	orderLine2.setToppingIds(new HashSet<>(Arrays.asList(testToppings[0].getId(), testToppings[1].getId())));
     	
     	// Valid record with one order line(coffee)
-    	Order order0 = new Order();
+    	OrderDto order0 = new OrderDto();
     	order0.setOrderLines(new HashSet<>(Arrays.asList(orderLine0)));
     	testOrders[0] = order0;
     	
     	// Valid record with one order line(coffee)
-    	Order order1 = new Order();
+    	OrderDto order1 = new OrderDto();
     	order1.setOrderLines(new HashSet<>(Arrays.asList(orderLine1)));
     	testOrders[1] = order1;
     	
     	// Valid record with 2 order lines(coffees)
-    	Order order2 = new Order();
+    	OrderDto order2 = new OrderDto();
     	order2.setOrderLines(new HashSet<>(Arrays.asList(orderLine0, orderLine2)));
     	testOrders[2] = order2;
     	
     	// Valid record with 3 order lines(coffees)
-    	Order order3 = new Order();
+    	OrderDto order3 = new OrderDto();
     	order3.setOrderLines(new HashSet<>(Arrays.asList(orderLine0, orderLine1, orderLine2)));
     	testOrders[3] = order3;
     }
@@ -111,10 +113,8 @@ public class OrderServiceTest {
     @Test
     // Validate	finding all orders
     public void testFindAll() {
-    	Order order0 = orderService.save(testOrders[0]);
-    	Order order1 = orderService.save(testOrders[1]);
-    	orderService.save(order0);
-    	orderService.save(order1);
+    	orderService.save(testOrders[0]);
+    	orderService.save(testOrders[1]);
     	
     	List<Order> orders = orderService.getAllOrders();
     	assertEquals(2, orders.size());
@@ -124,29 +124,30 @@ public class OrderServiceTest {
     // Verify that %25 discount applied
     public void testDiscountApplied() {
     	Order order = orderService.save(testOrders[2]);
-    	Order savedOrder = orderService.save(order);
     	
+    	// Get total amount of coffees and toppings included in the order
     	BigDecimal originalAmount = getOriginalAmount(order);
         BigDecimal discountedAmount = originalAmount.multiply(BigDecimal.valueOf(0.75));
          
     	// Validate original and discount amounts 
-    	assertTrue(savedOrder.getOriginalAmount().compareTo(originalAmount) == 0);
-    	assertTrue(savedOrder.getDiscountedAmount().compareTo(discountedAmount) == 0);
+    	assertTrue(order.getOriginalAmount().compareTo(originalAmount) == 0);
+    	assertTrue(order.getDiscountedAmount().compareTo(discountedAmount) == 0);
     }
     
     @Test
     // Verify that coffee with lowest amount becomes free for orders with more than 3 coffees
     public void testFreeCoffeeApplied() {
     	Order order = orderService.save(testOrders[3]);
-    	Order savedOrder = orderService.save(order);
     	
+    	// Get total amount of coffees and toppings included in the order
     	BigDecimal originalAmount = getOriginalAmount(order);
-    	// 2nd coffee with 3+1.5 amount must be set free
-        BigDecimal discountedAmount = originalAmount.subtract(BigDecimal.valueOf(4.5));
+    	// Line 1 has the cheapes amount (3 + 1.5 = 4.5)
+    	BigDecimal cheapestAmount = testCoffees[1].getAmount().add(testToppings[1].getAmount());
+        BigDecimal discountedAmount = originalAmount.subtract(cheapestAmount);
          
     	// Validate original and discount amounts 
-    	assertTrue(savedOrder.getOriginalAmount().compareTo(originalAmount) == 0);
-    	assertTrue(savedOrder.getDiscountedAmount().compareTo(discountedAmount) == 0);
+    	assertTrue(order.getOriginalAmount().compareTo(originalAmount) == 0);
+    	assertTrue(order.getDiscountedAmount().compareTo(discountedAmount) == 0);
     }
     
     @Test

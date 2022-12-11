@@ -1,6 +1,5 @@
 package com.coffeetime.coffeeshop.service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,7 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.coffeetime.coffeeshop.domain.Coffee;
 import com.coffeetime.coffeeshop.domain.Order;
+import com.coffeetime.coffeeshop.domain.OrderLine;
+import com.coffeetime.coffeeshop.domain.Topping;
+import com.coffeetime.coffeeshop.exception.HttpEmptyOrderException;
+import com.coffeetime.coffeeshop.exception.HttpNotFoundErrorException;
+import com.coffeetime.coffeeshop.exception.HttpProductNotFoundException;
+import com.coffeetime.coffeeshop.payload.OrderDto;
 import com.coffeetime.coffeeshop.repository.OrderRepository;
 
 @Service
@@ -26,24 +32,34 @@ public class OrderService {
     private OrderPricingService pricingService;
     
     @Autowired
+    private CoffeeService coffeeService;
+    
+    @Autowired
     private ToppingService toppingService;
 
-    public Order save(Order order) {
-    	// Set order of the order lines and score toppings order counts
+    public Order save(OrderDto orderDto) {
+        if (orderDto.getOrderLines().size() == 0) {
+            throw new HttpEmptyOrderException("At least one coffee must be added to the Order");
+        }
+        
+    	Order order = convertToOrder(orderDto);
+    	
+    	// Set original and discounted amounts
+    	pricingService.setOrderAmounts(order);
+    	
+    	// Save order
+        Order saved = orderRepository.save(order);
+    	
+        // Promote topping order counts
     	order.getOrderLines().forEach(orderLine -> {
-    		orderLine.setOrder(order);
-    		
     		orderLine.getToppings().forEach(topping -> {
     			topping.setOrderCount(topping.getOrderCount() + 1);
     			toppingService.save(topping);
     		});
     	});
     	
-    	// Set order original and discount amounts
-    	pricingService.setOrderAmounts(order);
-    	order.setOrderDate(new Date());
-        Order saved = orderRepository.save(order);
         logger.info("Order saved with Id: {}", saved.getId());
+        
         return saved;
     }
 
@@ -56,6 +72,9 @@ public class OrderService {
     }   
     
     public void delete(Long orderId) {
+    	 if (getOrder(orderId) == null) {
+             throw new HttpNotFoundErrorException("Cannot delete because the order with id " + orderId + " does not exist");
+         }
         orderRepository.deleteById(orderId);
         logger.info("Order with Id {} deleted", orderId);
     }
@@ -63,5 +82,35 @@ public class OrderService {
     // For unit tests
     public void deleteAll() {
         orderRepository.deleteAll();
+    }
+    
+    private Order convertToOrder(OrderDto orderDto) {
+    	Order order = new Order();
+    	orderDto.getOrderLines().forEach(orderLineDto -> {
+        	Optional<Coffee> optCoffee = coffeeService.getCoffee(orderLineDto.getCoffeeId());
+        	// Throw exception if coffee with the id does not exist
+        	if (optCoffee.isEmpty()) {
+                throw new HttpProductNotFoundException(String.format("Coffe with id %l not found", orderLineDto.getCoffeeId()));
+        	}
+        	
+        	OrderLine orderLine = new OrderLine();
+        	orderLine.setCoffee(optCoffee.get());
+        	
+        	if (orderLineDto.getToppingIds() != null) {
+        		orderLineDto.getToppingIds().forEach(toppingId -> {
+            		Optional<Topping> optTopping = toppingService.getTopping(toppingId);
+            		if (optTopping.isEmpty()) {
+                        throw new HttpProductNotFoundException(String.format("Topping with id %l not found", toppingId));
+                	}
+            		Topping topping = optTopping.get();
+            		orderLine.getToppings().add(topping);
+            	});
+            	
+        		order.getOrderLines().add(orderLine);
+        		orderLine.setOrder(order);
+        	}    
+    	});
+       
+        return order;
     }
 }
