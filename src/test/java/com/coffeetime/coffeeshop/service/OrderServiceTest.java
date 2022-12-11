@@ -23,6 +23,7 @@ import com.coffeetime.coffeeshop.domain.Coffee;
 import com.coffeetime.coffeeshop.domain.Order;
 import com.coffeetime.coffeeshop.domain.OrderLine;
 import com.coffeetime.coffeeshop.domain.Topping;
+import com.coffeetime.coffeeshop.exception.HttpProductNotFoundException;
 import com.coffeetime.coffeeshop.payload.OrderDto;
 import com.coffeetime.coffeeshop.payload.OrderLineDto;
 
@@ -189,13 +190,35 @@ public class OrderServiceTest {
 	        .containsExactlyInAnyOrder("Milk", "Cacao"); 
     }
     
+    // Validate saving order with an invalid coffee throws error
+    @Test(expected = HttpProductNotFoundException.class)      
+    public void testSaveOrderWithInvalidCoffeeId_Negative() {  
+    	OrderLineDto orderLine = new OrderLineDto();
+    	orderLine.setCoffeeId(9999L);
+    	OrderDto orderDto = new OrderDto();
+    	orderDto.setOrderLines(new HashSet<>(Arrays.asList(orderLine)));
+    	
+    	orderService.save(orderDto);
+    }
+    
+    // Validate saving order with an invalid topping throws error
+    @Test(expected = HttpProductNotFoundException.class)      
+    public void testSaveOrderWithInvalidToppingId_Negative() {  
+    	OrderLineDto orderLine = new OrderLineDto();
+    	orderLine.setCoffeeId(testCoffees[0].getId());
+    	orderLine.setToppingIds(new HashSet<>(Arrays.asList(9999L)));
+    	
+    	OrderDto orderDto = new OrderDto();
+    	orderDto.setOrderLines(new HashSet<>(Arrays.asList(orderLine)));
+    	
+    	orderService.save(orderDto);
+    }
+    
     private void deleteAllObjects() {
     	orderService.deleteAll();
     	
-    	// Delete coffee objects created from data.sql
     	coffeeService.deleteAll();
     	
-    	// Delete topping objects created from data.sql
     	toppingService.deleteAll();
     }
     

@@ -90,7 +90,7 @@ public class OrderService {
         	Optional<Coffee> optCoffee = coffeeService.getCoffee(orderLineDto.getCoffeeId());
         	// Throw exception if coffee with the id does not exist
         	if (optCoffee.isEmpty()) {
-                throw new HttpProductNotFoundException(String.format("Coffe with id %l not found", orderLineDto.getCoffeeId()));
+                throw new HttpProductNotFoundException(String.format("Coffe with id %d not found", orderLineDto.getCoffeeId()));
         	}
         	
         	OrderLine orderLine = new OrderLine();
@@ -100,7 +100,7 @@ public class OrderService {
         		orderLineDto.getToppingIds().forEach(toppingId -> {
             		Optional<Topping> optTopping = toppingService.getTopping(toppingId);
             		if (optTopping.isEmpty()) {
-                        throw new HttpProductNotFoundException(String.format("Topping with id %l not found", toppingId));
+                        throw new HttpProductNotFoundException(String.format("Topping with id %d not found", toppingId));
                 	}
             		Topping topping = optTopping.get();
             		orderLine.getToppings().add(topping);
