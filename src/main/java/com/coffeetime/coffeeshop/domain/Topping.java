@@ -12,6 +12,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)	
 public class Topping extends Product {
 
-	@Column(name = "ordered_count")
-	private int orderedCount = 0;
+	@Column(name = "order_count")
+	private int orderCount = 0;
 }

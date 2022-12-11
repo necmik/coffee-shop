@@ -2,7 +2,6 @@ package com.coffeetime.coffeeshop.controller;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -50,35 +49,7 @@ public class OrderController {
             throw new HttpEmptyOrderException("At least one coffee must be added to the Order");
         }
         
-        Order order = new Order();
-        orderDto.getOrderLines().forEach(orderLineDto -> {
-        	Optional<Coffee> optCoffee = coffeeService.getCoffee(orderLineDto.getCoffeeId());
-        	// Throw exception if coffee with the id does not exist
-        	if (optCoffee.isEmpty()) {
-                throw new HttpProductNotFoundException(String.format("Coffe with id %l not found", orderLineDto.getCoffeeId()));
-        	}
-        	
-        	OrderLine orderLine = new OrderLine();
-        	orderLine.setCoffee(optCoffee.get());
-        	
-        	if (orderLineDto.getToppingIds() != null) {
-        		orderLineDto.getToppingIds().forEach(toppingId -> {
-            		Optional<Topping> optTopping = toppingService.getTopping(toppingId);
-            		if (optTopping.isEmpty()) {
-                        throw new HttpProductNotFoundException(String.format("Topping with id %l not found", toppingId));
-                	}
-            		Topping topping = optTopping.get();
-            		// Score topping by 1
-            		topping.setOrderedCount(topping.getOrderedCount() + 1);
-            		orderLine.getToppings().add(topping);
-            	});
-            	
-        		order.getOrderLines().add(orderLine);
-            	orderLine.setOrder(order);
-        	}        	
-        });
-        
-        order.setOrderDate(new Date());
+        Order order = convertToOrder(orderDto);        
         Order result = orderService.save(order);
 
         return ResponseEntity.created(new URI("/api/orders/" + result.getId())).body(result);
@@ -96,5 +67,34 @@ public class OrderController {
         }
         orderService.delete(id);
         return ResponseEntity.ok().build();
+    }
+    
+    private Order convertToOrder(OrderDto orderDto) {
+    	Order order = new Order();
+    	orderDto.getOrderLines().forEach(orderLineDto -> {
+        	Optional<Coffee> optCoffee = coffeeService.getCoffee(orderLineDto.getCoffeeId());
+        	// Throw exception if coffee with the id does not exist
+        	if (optCoffee.isEmpty()) {
+                throw new HttpProductNotFoundException(String.format("Coffe with id %l not found", orderLineDto.getCoffeeId()));
+        	}
+        	
+        	OrderLine orderLine = new OrderLine();
+        	orderLine.setCoffee(optCoffee.get());
+        	
+        	if (orderLineDto.getToppingIds() != null) {
+        		orderLineDto.getToppingIds().forEach(toppingId -> {
+            		Optional<Topping> optTopping = toppingService.getTopping(toppingId);
+            		if (optTopping.isEmpty()) {
+                        throw new HttpProductNotFoundException(String.format("Topping with id %l not found", toppingId));
+                	}
+            		Topping topping = optTopping.get();
+            		orderLine.getToppings().add(topping);
+            	});
+            	
+        		order.getOrderLines().add(orderLine);
+        	}    
+    	});
+       
+        return order;
     }
 }

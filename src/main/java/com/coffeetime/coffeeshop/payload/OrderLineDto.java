@@ -18,6 +18,4 @@ public class OrderLineDto {
 	public void setToppingIds(Set<Long> toppingIds) {
 		this.toppingIds = toppingIds;
 	}
-	
-	
 }

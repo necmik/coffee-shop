@@ -40,4 +40,9 @@ public class CoffeeService {
     public List<Coffee> getAllCoffees() {
         return coffeeRepository.findAll();
     }
+    
+    // For unit tests
+    public void deleteAll() {
+		coffeeRepository.deleteAll();
+    }
 }

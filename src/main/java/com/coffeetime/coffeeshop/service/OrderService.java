@@ -1,6 +1,6 @@
 package com.coffeetime.coffeeshop.service;
 
-import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.coffeetime.coffeeshop.domain.Order;
-import com.coffeetime.coffeeshop.domain.OrderLine;
-import com.coffeetime.coffeeshop.domain.Topping;
 import com.coffeetime.coffeeshop.repository.OrderRepository;
 
 @Service
@@ -23,17 +21,30 @@ public class OrderService {
 	
     @Autowired
     private OrderRepository orderRepository;
+    
+    @Autowired
+    private OrderPricingService pricingService;
+    
+    @Autowired
+    private ToppingService toppingService;
 
     public Order save(Order order) {
-    	setOrderAmounts(order);
+    	// Set order of the order lines and score toppings order counts
+    	order.getOrderLines().forEach(orderLine -> {
+    		orderLine.setOrder(order);
+    		
+    		orderLine.getToppings().forEach(topping -> {
+    			topping.setOrderCount(topping.getOrderCount() + 1);
+    			toppingService.save(topping);
+    		});
+    	});
+    	
+    	// Set order original and discount amounts
+    	pricingService.setOrderAmounts(order);
+    	order.setOrderDate(new Date());
         Order saved = orderRepository.save(order);
         logger.info("Order saved with Id: {}", saved.getId());
         return saved;
-    }
-
-    public void delete(Long orderId) {
-        orderRepository.deleteById(orderId);
-        logger.info("Order with Id {} deleted", orderId);
     }
 
     public Optional<Order> getOrder(Long id) {
@@ -44,40 +55,13 @@ public class OrderService {
         return orderRepository.findAll();
     }   
     
-    private void setOrderAmounts(Order order) {       
-    	
-    	BigDecimal originalAmount = BigDecimal.ZERO; // Total amount of the order
-    	BigDecimal lowestLineAmount = BigDecimal.valueOf(1000000000); // Lowest amount of the order lines
-    	double discountPercentage = 0.25;
-    	BigDecimal minimumAmountForDiscount = BigDecimal.valueOf(12);
-    	
-        for (OrderLine orderLine : order.getOrderLines()) {        	
-        	BigDecimal orderLineAmount = BigDecimal.ZERO;
-        	orderLineAmount = orderLineAmount.add(orderLine.getCoffee().getAmount());
-        	for(Topping topping : orderLine.getToppings()) {
-        		orderLineAmount = orderLineAmount.add(topping.getAmount());
-        	};
-        	orderLine.setTotalAmount(orderLineAmount);
-        	
-        	originalAmount = originalAmount.add(orderLineAmount);
-        	lowestLineAmount = lowestLineAmount.min(orderLineAmount);            
-        };
-        
-        order.setOriginalAmount(originalAmount);
-        
-        BigDecimal discountAmount = BigDecimal.ZERO;
-        if (originalAmount.compareTo(minimumAmountForDiscount) > 0) {
-        	discountAmount = originalAmount.multiply(BigDecimal.valueOf(discountPercentage));
-        }
-        
-        if (order.getOrderLines().size() >= 3) {
-        	discountAmount = discountAmount.min(lowestLineAmount);
-        }
-        	
-        order.setDiscountedAmount(originalAmount.subtract(discountAmount)); 
-        
-        if (originalAmount.compareTo(discountAmount) != 0) {
-        	logger.info("Discount applied. New price is {}", order.getDiscountedAmount());
-        }
+    public void delete(Long orderId) {
+        orderRepository.deleteById(orderId);
+        logger.info("Order with Id {} deleted", orderId);
+    }
+    
+    // For unit tests
+    public void deleteAll() {
+        orderRepository.deleteAll();
     }
 }

@@ -32,7 +32,7 @@ public class ToppingController {
         if (topping.getId() != null) {
             throw new HttpClientErrorException("A topping to be created cannot have id attribute");
         }
-        topping.setOrderedCount(0);
+        topping.setOrderCount(0);
         Topping result = toppingService.save(topping);
         return ResponseEntity.created(new URI("/api/toppings/" + result.getId())).body(result);
     }

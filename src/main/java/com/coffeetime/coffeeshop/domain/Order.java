@@ -1,9 +1,9 @@
 package com.coffeetime.coffeeshop.domain;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
@@ -29,7 +29,7 @@ import lombok.Data;
 @Data
 public class Order {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
     @Temporal(TemporalType.DATE)
@@ -48,5 +48,5 @@ public class Order {
 	 */
 	@JsonManagedReference
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<OrderLine> orderLines = new ArrayList<>();
+    private Set<OrderLine> orderLines = new HashSet<>();
 }

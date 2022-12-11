@@ -2,7 +2,6 @@ package com.coffeetime.coffeeshop.domain;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -15,8 +14,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -67,8 +66,8 @@ public class OrderLine {
 	public void setCoffee(Coffee coffee) {
 		this.coffee = coffee;
 	}
-
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+	
+	@ManyToMany(fetch = FetchType.LAZY)
 	public Set<Topping> getToppings() {
 		return toppings;
 	}
@@ -85,6 +84,4 @@ public class OrderLine {
 	public void setTotalAmount(BigDecimal totalAmount) {
 		this.totalAmount = totalAmount;
 	}
-	
-	
 }

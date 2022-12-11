@@ -43,4 +43,9 @@ public class ToppingService {
     public List<Topping> getTopN(int limit) {
         return toppingRepository.findTopN(limit);
     }
+    
+    // For unit tests
+    public void deleteAll() {
+		toppingRepository.deleteAll();
+    }
 }
