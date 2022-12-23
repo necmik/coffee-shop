@@ -69,14 +69,14 @@ public class OrderPricingService {
         
         if (originalAmount.compareTo(minimumAmountForDiscount) > 0) {
         	discountAmount = originalAmount.multiply(BigDecimal.valueOf(discountPercentage));
-        }
-        
-        OrderLine cheapestOrderLine = orderLines
-        		.stream()
-        		.min(Comparator.comparing(OrderLine::getTotalAmount))
-        		.get();
+        }       
         
         if (orderLines.size() >= 3) {
+            OrderLine cheapestOrderLine = orderLines
+            		.stream()
+            		.min(Comparator.comparing(OrderLine::getTotalAmount))
+            		.get();
+            
         	discountAmount = discountAmount.min(cheapestOrderLine.getTotalAmount());
         }
         
