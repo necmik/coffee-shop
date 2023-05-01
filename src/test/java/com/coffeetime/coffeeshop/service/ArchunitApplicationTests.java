@@ -1,30 +1,19 @@
 package com.coffeetime.coffeeshop.service;
 
-import org.junit.jupiter.api.BeforeEach;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noFields;
+import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import com.tngtech.archunit.core.domain.JavaClasses;
-import com.tngtech.archunit.core.importer.ClassFileImporter;
-import com.tngtech.archunit.core.importer.ImportOption;
+import com.tngtech.archunit.junit.AnalyzeClasses;
 
-import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
-import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
-import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noFields;
-import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
-
+@AnalyzeClasses(packages = "com.coffeetime.coffeeshop")
 public class ArchunitApplicationTests {
-
-	private JavaClasses importedClasses;
-	
-	@BeforeEach
-    public void setup() {
-        importedClasses = new ClassFileImporter()
-                .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-                .importPackages("com.coffeetime.coffeeshop");
-    }
 	
 	/* Package Dependency Checks */
 	@Test
@@ -35,8 +24,7 @@ public class ArchunitApplicationTests {
                 .should()
                 .dependOnClassesThat()
                 .resideInAnyPackage("com.coffeetime.coffeeshop.controller..")
-                .because("Services and repositories should not depend on web layer")
-                .check(importedClasses);
+                .because("Services and repositories should not depend on web layer");
     }
 	
 	/* Class Dependency Checks */
@@ -44,8 +32,7 @@ public class ArchunitApplicationTests {
     void serviceClassesShouldOnlyBeAccessedByController() {
         classes()
                 .that().resideInAPackage("..service..")
-                .should().onlyBeAccessed().byAnyPackage("..service..", "..controller..")
-                .check(importedClasses);
+                .should().onlyBeAccessed().byAnyPackage("..service..", "..controller..");
     }
 	
 	/* Naming convention */
@@ -55,48 +42,42 @@ public class ArchunitApplicationTests {
                 .that().resideInAPackage("..service..")
                 .should().haveSimpleNameEndingWith("Service")
                 .orShould().haveSimpleNameEndingWith("ServiceImpl")
-                .orShould().haveSimpleNameEndingWith("Component")
-                .check(importedClasses);
+                .orShould().haveSimpleNameEndingWith("Component");
     }
 
     @Test
     void repositoryClassesShouldBeNamedXRepository() {
         classes()
                 .that().resideInAPackage("..repository..")
-                .should().haveSimpleNameEndingWith("Repository")
-                .check(importedClasses);
+                .should().haveSimpleNameEndingWith("Repository");
     }
 
     @Test
     void controllerClassesShouldBeNamedXController() {
         classes()
                 .that().resideInAPackage("..controller..")
-                .should().haveSimpleNameEndingWith("Controller")
-                .check(importedClasses);
+                .should().haveSimpleNameEndingWith("Controller");
     }
     
     /* Annotation checks */
     @Test
     void fieldInjectionNotUseAutowiredAnnotation() {
         noFields()
-                .should().beAnnotatedWith(Autowired.class)
-                .check(importedClasses);
+                .should().beAnnotatedWith(Autowired.class);
     }
 
     @Test
     void repositoryClassesShouldHaveSpringRepositoryAnnotation() {
         classes()
                 .that().resideInAPackage("..repository..")
-                .should().beAnnotatedWith(Repository.class)
-                .check(importedClasses);
+                .should().beAnnotatedWith(Repository.class);
     }
 
     @Test
     void serviceClassesShouldHaveSpringServiceAnnotation() {
         classes()
                 .that().resideInAPackage("..service..")
-                .should().beAnnotatedWith(Service.class)
-                .check(importedClasses);
+                .should().beAnnotatedWith(Service.class);
     }
     
     /* Layer checks */
@@ -108,7 +89,6 @@ public class ArchunitApplicationTests {
                 .layer("Repository").definedBy("..repository..")
                 .whereLayer("Controller").mayNotBeAccessedByAnyLayer()
                 .whereLayer("Service").mayOnlyBeAccessedByLayers("Controller")
-                .whereLayer("Repository").mayOnlyBeAccessedByLayers("Service")
-                .check(importedClasses);
+                .whereLayer("Repository").mayOnlyBeAccessedByLayers("Service");
     }
 }
