@@ -18,8 +18,12 @@ public class CoffeeService {
 	
 	Logger logger = LoggerFactory.getLogger(CoffeeService.class);
 	
-	@Autowired
 	private CoffeeRepository coffeeRepository;
+	
+	@Autowired
+	public CoffeeService(CoffeeRepository coffeeRepository) {
+		this.coffeeRepository = coffeeRepository;
+	}
 	
 	public Coffee save(Coffee coffee) {
 		Coffee saved = coffeeRepository.save(coffee);

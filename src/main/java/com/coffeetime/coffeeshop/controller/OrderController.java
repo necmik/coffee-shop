@@ -21,8 +21,13 @@ import com.coffeetime.coffeeshop.service.OrderService;
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
-	@Autowired
+	
 	private OrderService orderService;
+	
+	@Autowired
+	public OrderController(OrderService orderService) {
+		this.orderService = orderService;
+	}
 	
 	@PostMapping
 	public ResponseEntity<Order> saveOrder(@RequestBody OrderDto orderDto) throws URISyntaxException {

@@ -18,8 +18,12 @@ public class ToppingService {
 	
 	Logger logger = LoggerFactory.getLogger(ToppingService.class);
 	
-	@Autowired
 	private ToppingRepository toppingRepository;
+	
+	@Autowired
+	public ToppingService(ToppingRepository toppingRepository) {
+		this.toppingRepository = toppingRepository;
+	}
 	
 	public Topping save(Topping topping) {
 		Topping saved = toppingRepository.save(topping);

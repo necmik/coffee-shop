@@ -25,17 +25,21 @@ public class OrderService {
 	
 	Logger logger = LoggerFactory.getLogger(OrderService.class);
 	
-    @Autowired
     private OrderRepository orderRepository;
-    
-    @Autowired
     private OrderPricingService pricingService;
-    
-    @Autowired
     private CoffeeService coffeeService;
-    
-    @Autowired
     private ToppingService toppingService;
+    
+	@Autowired
+	public OrderService(OrderRepository orderRepository,
+			OrderPricingService pricingService,
+			CoffeeService coffeeService,
+			ToppingService toppingService) {
+		this.orderRepository = orderRepository;
+		this.pricingService = pricingService;
+		this.coffeeService = coffeeService;
+		this.toppingService = toppingService;
+	}
 
     public Order save(OrderDto orderDto) {
         if (orderDto.getOrderLines().size() == 0) {

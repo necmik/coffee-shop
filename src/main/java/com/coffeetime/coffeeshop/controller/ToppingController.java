@@ -24,8 +24,13 @@ import com.coffeetime.coffeeshop.service.ToppingService;
 @RestController
 @RequestMapping("/toppings")
 public class ToppingController {
-	@Autowired
+
 	private ToppingService toppingService;
+	
+	@Autowired
+	public ToppingController(ToppingService toppingService) {
+		this.toppingService = toppingService;
+	}
 	
     @PostMapping
     public ResponseEntity<Topping> createTopping(@RequestBody Topping topping) throws URISyntaxException {

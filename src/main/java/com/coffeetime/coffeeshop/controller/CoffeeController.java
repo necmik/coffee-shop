@@ -27,8 +27,12 @@ import com.coffeetime.coffeeshop.service.CoffeeService;
 @RequestMapping("/coffees")
 public class CoffeeController {	
 	
-	@Autowired
 	private CoffeeService coffeeService;
+	
+	@Autowired
+	public CoffeeController(CoffeeService coffeeService) {
+		this.coffeeService = coffeeService;
+	}
 	
     @PostMapping
     public ResponseEntity<Coffee> createCoffee(@RequestBody @Valid Coffee coffee) throws URISyntaxException {
